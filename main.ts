@@ -8,7 +8,9 @@ let playBtn:any
 let playBtnLabel:any
 let tutroialBtn:any
 let tutroialBtnLabel:any
-let player:any
+let player: any
+
+console.log(playBtn)
 
 function destroyAll() {
     sprites.destroyAllSpritesOfKind(SpriteKind.Button)
@@ -21,8 +23,12 @@ function destroyAll() {
 function mainMenue() {
     
     // crate menue buttons
-    createIcon(playBtn, assets.image`playBtn`, playBtnLabel, 'Play', 135, 20)                 // create play button
-    createIcon(tutroialBtn, assets.image`tutroialBtn`, tutroialBtnLabel, 'Tutorial', 90 ,20) // create tutorial button
+    playBtn = sprites.create(assets.image`playBtn`, SpriteKind.Button)
+    createIcon(playBtn, playBtnLabel, 'Play', 135, 20)                 // create play button
+
+    
+    tutroialBtn = sprites.create(assets.image`tutroialBtn`, SpriteKind.Button)
+    createIcon(tutroialBtn, tutroialBtnLabel, 'Tutorial', 90, 20) // create tutorial button
     
     // create Cursor
     let cursor = sprites.create(assets.image`Cursor`, SpriteKind.Player) // create mouse cursor
@@ -33,17 +39,16 @@ function mainMenue() {
         if (cursor.overlapsWith(playBtn)) {
             destroyAll()
             lvl1()
-        } else {}
+        }
     })
 
         
 
 
-    function createIcon(btnName:any, icon:any, label:any, text:string, xLocation:number, yLocation:number){
+    function createIcon(btnName:any, label:any, text:string, xLocation:number, yLocation:number){
         // create sprite
-        btnName = sprites.create(icon, SpriteKind.Button)
         btnName.setPosition(xLocation, yLocation)
-
+        console.log(btnName)
         // create label
         playBtnLabel = textsprite.create(text)
         playBtnLabel.setPosition(xLocation, yLocation + 15)
