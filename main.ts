@@ -8,7 +8,10 @@ let playBtn:any
 let playBtnLabel:any
 let tutroialBtn:any
 let tutroialBtnLabel:any
+
 let player: any
+let basicEnemy: any
+
 
 console.log(playBtn)
 
@@ -60,7 +63,30 @@ function tutorial() {
 }
 
 function lvl1() {
+
+    controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+        if (player.isHittingTile(CollisionDirection.Bottom)) {
+            player.vy = -200
+        }
+    })
+    controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+        if (player.isHittingTile(CollisionDirection.Bottom)) {
+            player.vy = -200
+        }
+    })
+
+    // player set up
     player = sprites.create(assets.image`Player`)
+    controller.moveSprite(player, 100, 0)
+    player.ay = 500
+    scene.cameraFollowSprite(player)
+
+    // scene stup
+    scene.setTileMapLevel(assets.tilemap`level1`)
+
+    // enemy setup
+    basicEnemy = sprites.create(assets.image`Basic Enemy`, SpriteKind.Enemy)
+    tiles.placeOnRandomTile(basicEnemy, assets.tile`Basic Enemy Spawner`)
 }
 
 scene.setBackgroundImage(assets.image`Intro Image`)
