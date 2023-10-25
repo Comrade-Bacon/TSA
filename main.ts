@@ -19,6 +19,7 @@ function destroyAll() {
     sprites.destroyAllSpritesOfKind(SpriteKind.Button)
     sprites.destroyAllSpritesOfKind(SpriteKind.Text)
     sprites.destroyAllSpritesOfKind(SpriteKind.Player)
+    sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
 }
 
 
@@ -26,12 +27,14 @@ function destroyAll() {
 function mainMenue() {
     
     // crate menue buttons
-    playBtn = sprites.create(assets.image`playBtn`, SpriteKind.Button)
-    createIcon(playBtn, playBtnLabel, 'Play', 135, 20)                 // create play button
 
-    
+        // create play button
+    playBtn = sprites.create(assets.image`playBtn`, SpriteKind.Button)
+    createIcon(playBtn, playBtnLabel, 'Play', 135, 20)
+
+        // create tutorial button
     tutroialBtn = sprites.create(assets.image`tutroialBtn`, SpriteKind.Button)
-    createIcon(tutroialBtn, tutroialBtnLabel, 'Tutorial', 90, 20) // create tutorial button
+    createIcon(tutroialBtn, tutroialBtnLabel, 'Tutorial', 90, 20)
     
     // create Cursor
     let cursor = sprites.create(assets.image`Cursor`, SpriteKind.Player) // create mouse cursor
@@ -56,6 +59,10 @@ function mainMenue() {
         playBtnLabel = textsprite.create(text)
         playBtnLabel.setPosition(xLocation, yLocation + 15)
     }
+}
+
+function settings() {
+
 }
 
 function tutorial() {
