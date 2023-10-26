@@ -61,7 +61,7 @@ function mainMenue() {
     }
 }
 
-function settings() {
+function setngs() {
 
 }
 
