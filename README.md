@@ -3,15 +3,6 @@
 
 > Open this page at [https://comrade-bacon.github.io/tsa/](https://comrade-bacon.github.io/tsa/)
 
-## Use as Extension
-
-This repository can be added as an **extension** in MakeCode.
-
-* open [https://arcade.makecode.com/](https://arcade.makecode.com/)
-* click on **New Project**
-* click on **Extensions** under the gearwheel menu
-* search for **https://github.com/comrade-bacon/tsa** and import
-
 ## Edit this project ![Build status badge](https://github.com/comrade-bacon/tsa/workflows/MakeCode/badge.svg)
 
 To edit this repository in MakeCode.
