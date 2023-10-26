@@ -82,7 +82,7 @@ function platformerSetup() {
             player.vy = -200
         }
     })
-
+}
 function lvl1() {
 
     // player set up
@@ -104,7 +104,7 @@ function lvl1() {
     // colisions
     sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, othersprite: Sprite) {  
         if (player.vy >0 && (!(player.isHittingTile(CollisionDirection.Bottom)) || player.y > basicEnemy.top)) {
-            othersprite.destroy
+            othersprite.destroy()
         } else {
             sprite.destroy()
         }
