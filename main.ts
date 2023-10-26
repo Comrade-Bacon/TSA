@@ -12,9 +12,6 @@ let tutroialBtnLabel:any
 let player: any
 let basicEnemy: any
 
-
-console.log(playBtn)
-
 function destroyAll() {
     sprites.destroyAllSpritesOfKind(SpriteKind.Button)
     sprites.destroyAllSpritesOfKind(SpriteKind.Text)
@@ -54,7 +51,6 @@ function mainMenue() {
     function createIcon(btnName:any, label:any, text:string, xLocation:number, yLocation:number){
         // create sprite
         btnName.setPosition(xLocation, yLocation)
-        console.log(btnName)
         // create label
         playBtnLabel = textsprite.create(text)
         playBtnLabel.setPosition(xLocation, yLocation + 15)
@@ -102,13 +98,16 @@ function lvl1() {
     tiles.placeOnRandomTile(basicEnemy, assets.tile`Basic Enemy Spawner`)
 
     // colisions
-    sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, othersprite: Sprite) {  
-        if (player.vy >0 && (!(player.isHittingTile(CollisionDirection.Bottom)) || player.y > basicEnemy.top)) {
-            othersprite.destroy()
+
+    sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, otherSprite: Sprite) {  
+        console.log("Hit!")
+        if (sprite.vy >0 && (!(sprite.isHittingTile(CollisionDirection.Bottom)) || sprite.y > otherSprite.top)) {
+            otherSprite.destroy()
         } else {
             sprite.destroy()
         }
     })
+        
 }
 
 scene.setBackgroundImage(assets.image`Intro Image`)
