@@ -93,6 +93,8 @@ function lvl1() {
 
     // enemy setup
     basicEnemy = sprites.create(assets.image`Basic Enemy`, SpriteKind.Enemy)
+
+    basicEnemy.follow(player,40,20)
     tiles.placeOnRandomTile(basicEnemy, assets.tile`Basic Enemy Spawner`)
 }
 
@@ -103,3 +105,4 @@ pause(1000);
 scene.setBackgroundImage(null)
 
 mainMenue() // start the  game
+
