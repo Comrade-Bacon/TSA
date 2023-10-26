@@ -82,7 +82,7 @@ function platformerSetup() {
 function lvl1() {
 
     // player set up
-    player = sprites.create(assets.image`Player`)
+    player = sprites.create(assets.image`Player`, SpriteKind.Player)
     controller.moveSprite(player, 100, 0)
     player.ay = 500
     scene.cameraFollowSprite(player)
@@ -98,9 +98,7 @@ function lvl1() {
     tiles.placeOnRandomTile(basicEnemy, assets.tile`Basic Enemy Spawner`)
 
     // colisions
-
     sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, otherSprite: Sprite) {  
-        console.log("Hit!")
         if (sprite.vy >0 && (!(sprite.isHittingTile(CollisionDirection.Bottom)) || sprite.y > otherSprite.top)) {
             otherSprite.destroy()
         } else {
