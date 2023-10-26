@@ -69,8 +69,9 @@ function tutorial() {
 
 }
 
-function lvl1() {
 
+function platformerSetup() {
+    // jump set up
     controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         if (player.isHittingTile(CollisionDirection.Bottom)) {
             player.vy = -200
@@ -82,11 +83,16 @@ function lvl1() {
         }
     })
 
+function lvl1() {
+
     // player set up
     player = sprites.create(assets.image`Player`)
     controller.moveSprite(player, 100, 0)
     player.ay = 500
     scene.cameraFollowSprite(player)
+       
+
+    platformerSetup()
 
     // scene stup
     scene.setTileMapLevel(assets.tilemap`level1`)
@@ -94,6 +100,15 @@ function lvl1() {
     // enemy setup
     basicEnemy = sprites.create(assets.image`Basic Enemy`, SpriteKind.Enemy)
     tiles.placeOnRandomTile(basicEnemy, assets.tile`Basic Enemy Spawner`)
+
+    // colisions
+    sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, othersprite: Sprite) {  
+        if (player.vy >0 && (!(player.isHittingTile(CollisionDirection.Bottom)) || player.y > basicEnemy.top)) {
+            othersprite.destroy
+        } else {
+            sprite.destroy()
+        }
+    })
 }
 
 scene.setBackgroundImage(assets.image`Intro Image`)
@@ -102,4 +117,4 @@ music.setVolume(1)*/
 pause(1000);
 scene.setBackgroundImage(null)
 
-mainMenue() // start the  game
+mainMenue()  // start game
