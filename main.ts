@@ -12,9 +12,6 @@ let tutroialBtnLabel:any
 let player: any
 let basicEnemy: any
 
-
-console.log(playBtn)
-
 function destroyAll() {
     sprites.destroyAllSpritesOfKind(SpriteKind.Button)
     sprites.destroyAllSpritesOfKind(SpriteKind.Text)
@@ -54,7 +51,6 @@ function mainMenue() {
     function createIcon(btnName:any, label:any, text:string, xLocation:number, yLocation:number){
         // create sprite
         btnName.setPosition(xLocation, yLocation)
-        console.log(btnName)
         // create label
         playBtnLabel = textsprite.create(text)
         playBtnLabel.setPosition(xLocation, yLocation + 15)
@@ -69,8 +65,9 @@ function tutorial() {
 
 }
 
-function lvl1() {
 
+function platformerSetup() {
+    // jump set up
     controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         if (player.isHittingTile(CollisionDirection.Bottom)) {
             player.vy = -200
@@ -81,21 +78,34 @@ function lvl1() {
             player.vy = -200
         }
     })
+}
+function lvl1() {
 
     // player set up
-    player = sprites.create(assets.image`Player`)
+    player = sprites.create(assets.image`Player`, SpriteKind.Player)
     controller.moveSprite(player, 100, 0)
     player.ay = 500
     scene.cameraFollowSprite(player)
+       
+
+    platformerSetup()
 
     // scene stup
     scene.setTileMapLevel(assets.tilemap`level1`)
 
     // enemy setup
     basicEnemy = sprites.create(assets.image`Basic Enemy`, SpriteKind.Enemy)
-
-    basicEnemy.follow(player,40,20)
     tiles.placeOnRandomTile(basicEnemy, assets.tile`Basic Enemy Spawner`)
+
+    // colisions
+    sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, otherSprite: Sprite) {  
+        if (sprite.vy >0 && (!(sprite.isHittingTile(CollisionDirection.Bottom)) || sprite.y > otherSprite.top)) {
+            otherSprite.destroy()
+        } else {
+            sprite.destroy()
+        }
+    })
+        
 }
 
 scene.setBackgroundImage(assets.image`Intro Image`)
@@ -104,5 +114,4 @@ music.setVolume(1)*/
 pause(1000);
 scene.setBackgroundImage(null)
 
-mainMenue() // start the  game
-
+mainMenue()  // start game
