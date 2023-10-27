@@ -95,8 +95,20 @@ function lvl1() {
 
     // enemy setup
     basicEnemy = sprites.create(assets.image`Basic Enemy`, SpriteKind.Enemy)
-    tiles.placeOnRandomTile(basicEnemy, assets.tile`Basic Enemy Spawner`)
+    tiles.placeOnTile(basicEnemy, tiles.getTileLocation(10, 14))
+    basicEnemy.vx = 10
 
+    while (basicEnemy) {
+        if (!(basicEnemy.isHittingTile(CollisionDirection.Bottom))) {
+            if (basicEnemy.vx == 10) {
+                basicEnemy.vx = -10
+            } else {
+                basicEnemy.vx = 10
+            }
+        }
+    }
+
+ 
     // colisions
     sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, otherSprite: Sprite) {  
         if (sprite.vy >0 && (!(sprite.isHittingTile(CollisionDirection.Bottom)) || sprite.y > otherSprite.top)) {
