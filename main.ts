@@ -97,8 +97,13 @@ function lvl1() {
     basicEnemy = sprites.create(assets.image`Basic Enemy`, SpriteKind.Enemy)
     tiles.placeOnTile(basicEnemy, tiles.getTileLocation(10, 14))
     basicEnemy.vx = 10
+    //story.spriteMoveToLocation(basicEnemy, )
 
-    while (basicEnemy) {
+    //while (basicEnemy) {
+    basicEnemy.isHittingTile(CollisionDirection.Bottom, function () {
+        
+    })
+    tiles.tileAtLocationIsWall(tiles.Location(basicEnemy.yLocation -1, basicEnemy.xLocation))
         if (!(basicEnemy.isHittingTile(CollisionDirection.Bottom))) {
             if (basicEnemy.vx == 10) {
                 basicEnemy.vx = -10
@@ -106,7 +111,7 @@ function lvl1() {
                 basicEnemy.vx = 10
             }
         }
-    }
+    //}
 
  
     // colisions
