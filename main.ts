@@ -103,7 +103,8 @@ function lvl1() {
     basicEnemy.isHittingTile(CollisionDirection.Bottom, function () {
         
     })
-    tiles.tileAtLocationIsWall(tiles.Location(basicEnemy.yLocation -1, basicEnemy.xLocation))
+    tiles.tileAtLocationIsWall(tiles.getTileLocation(basicEnemy.yLocation - 1, basicEnemy.xLocation))
+
         if (!(basicEnemy.isHittingTile(CollisionDirection.Bottom))) {
             if (basicEnemy.vx == 10) {
                 basicEnemy.vx = -10
@@ -112,7 +113,9 @@ function lvl1() {
             }
         }
     //}
-
+game.onUpdateInterval(500, function() {
+    
+})
  
     // colisions
     sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, otherSprite: Sprite) {  
