@@ -1,16 +1,29 @@
 
+/* -- Setup -- */
+
+
 // setup new sprite kinds:
 namespace SpriteKind {
     export const Button = SpriteKind.create() // set up button sprite kind
 }
 
+/*variables*/
+
+// button vars
 let playBtn:any
 let playBtnLabel:any
 let tutroialBtn:any
 let tutroialBtnLabel:any
 
+// sprite vars
 let player: any
 let basicEnemy: any
+
+
+/* -- "Execution" -- */
+
+/* Functions */
+
 
 function destroyAll() {
     sprites.destroyAllSpritesOfKind(SpriteKind.Button)
@@ -38,16 +51,16 @@ function mainMenue() {
     controller.moveSprite(cursor, 150, 150)                              // move mouse withe arrows
     cursor.setStayInScreen(true)                                         // prevent the cursor from exiting the screen
 
-    controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-        if (cursor.overlapsWith(playBtn)) {
-            destroyAll()
-            lvl1()
+    controller.A.onEvent(ControllerButtonEvent.Pressed, function () { // when A is pressed
+        if (cursor.overlapsWith(playBtn)) {                           // if the cursor is touching the play button
+            destroyAll()                                              // destroy all sprites on the screen
+            lvl1()                                                    // start lvl 1
         }
     })
 
         
 
-
+    // function for creating buttons
     function createIcon(btnName:any, label:any, text:string, xLocation:number, yLocation:number){
         // create sprite
         btnName.setPosition(xLocation, yLocation)
@@ -65,8 +78,14 @@ function tutorial() {
 
 }
 
-
+// function for basic platformer setup
 function platformerSetup() {
+    
+    // player set up
+    player = sprites.create(assets.image`Player`, SpriteKind.Player)
+    controller.moveSprite(player, 100, 0)
+    scene.cameraFollowSprite(player)
+
     // jump set up
     controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         if (player.isHittingTile(CollisionDirection.Bottom)) {
@@ -79,14 +98,13 @@ function platformerSetup() {
         }
     })
 }
+
+
+
+
 function lvl1() {
 
-    // player set up
-    player = sprites.create(assets.image`Player`, SpriteKind.Player)
-    controller.moveSprite(player, 100, 0)
     player.ay = 500
-    scene.cameraFollowSprite(player)
-       
 
     platformerSetup()
 
@@ -95,23 +113,40 @@ function lvl1() {
 
     // enemy setup
     basicEnemy = sprites.create(assets.image`Basic Enemy`, SpriteKind.Enemy)
-    tiles.placeOnRandomTile(basicEnemy, assets.tile`Basic Enemy Spawner`)
+    tiles.placeOnTile(basicEnemy, tiles.getTileLocation(10, 14))
+    basicEnemy.vx = -30
+ 
+    // enemy movment setup
+    game.onUpdateInterval(200, function() { // evry 0.2 sec          
+        if (basicEnemy.vx == 30) {  // if the player is traveling right
+            if (!(tiles.tileAtLocationIsWall(basicEnemy.tilemapLocation().getNeighboringLocation(CollisionDirection.Right).getNeighboringLocation(CollisionDirection.Bottom)))) { // if the tile to the below and to the right of the sprite is not a wall
+                basicEnemy.vx = -30 // make the sprite turn the other direction
+            }
+        } else {
+            if (!(tiles.tileAtLocationIsWall(basicEnemy.tilemapLocation().getNeighboringLocation(CollisionDirection.Left).getNeighboringLocation(CollisionDirection.Bottom)))) { // if the tile to the below and to the right of the sprite is not a wall
+                basicEnemy.vx = 30 // make the sprite turn the other direction
+            }
+        }
+    })
+ 
 
     // colisions
-    sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, otherSprite: Sprite) {  
-        if (sprite.vy >0 && (!(sprite.isHittingTile(CollisionDirection.Bottom)) || sprite.y > otherSprite.top)) {
-            otherSprite.destroy()
+    sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, otherSprite: Sprite) {       // when the playeer overlaps with the basic enemy
+        if (sprite.vy >0 && (!(sprite.isHittingTile(CollisionDirection.Bottom)) || sprite.y > otherSprite.top)) { // if the player landed on the enemy
+            otherSprite.destroy() // destroy the enemy
         } else {
-            sprite.destroy()
+            sprite.destroy() // destroy the player
         }
     })
         
 }
 
+
+/*Begin Game*/
+
 scene.setBackgroundImage(assets.image`Intro Image`)
-/*music.play(music.createSong(assets.song`background song`), music.PlaybackMode.LoopingInBackground)
-music.setVolume(1)*/
+
 pause(1000);
 scene.setBackgroundImage(null)
 
-mainMenue()  // start game
+mainMenue() 
