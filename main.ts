@@ -111,24 +111,31 @@ function lvl1() {
     // scene stup
     scene.setTileMapLevel(assets.tilemap`level1`)
 
-    // enemy setup
-    basicEnemy = sprites.create(assets.image`Basic Enemy`, SpriteKind.Enemy)
-    tiles.placeOnTile(basicEnemy, tiles.getTileLocation(10, 14))
-    basicEnemy.vx = -30
- 
-    // enemy movment setup
-    game.onUpdateInterval(200, function() { // evry 0.2 sec          
-        if (basicEnemy.vx == 30) {  // if the player is traveling right
-            if (!(tiles.tileAtLocationIsWall(basicEnemy.tilemapLocation().getNeighboringLocation(CollisionDirection.Right).getNeighboringLocation(CollisionDirection.Bottom)))) { // if the tile to the below and to the right of the sprite is not a wall
-                basicEnemy.vx = -30 // make the sprite turn the other direction
+    let enemys: any = []
+    let enemyNumber:number
+    for (let i: number = 0; i < 3; i++) {
+        // enemy setup
+        enemyNumber = i
+        enemys[enemyNumber] = sprites.create(assets.image`Basic Enemy`, SpriteKind.Enemy)
+        enemys[enemyNumber].vx = -30
+    
+        // enemy movment setup
+        game.onUpdateInterval(200, function () { // evry 0.2 sec          
+            if (enemys[enemyNumber].vx == 30) {  // if the player is traveling right
+                if (!(tiles.tileAtLocationIsWall(enemys[enemyNumber].tilemapLocation().getNeighboringLocation(CollisionDirection.Right).getNeighboringLocation(CollisionDirection.Bottom)))) { // if the tile to the below and to the right of the sprite is not a wall
+                    enemys[enemyNumber].vx = -30 // make the sprite turn the other direction
+                }
+            } else {
+                if (!(tiles.tileAtLocationIsWall(enemys[enemyNumber].tilemapLocation().getNeighboringLocation(CollisionDirection.Left).getNeighboringLocation(CollisionDirection.Bottom)))) { // if the tile to the below and to the right of the sprite is not a wall
+                    enemys[enemyNumber].vx = 30 // make the sprite turn the other direction
+                }
             }
-        } else {
-            if (!(tiles.tileAtLocationIsWall(basicEnemy.tilemapLocation().getNeighboringLocation(CollisionDirection.Left).getNeighboringLocation(CollisionDirection.Bottom)))) { // if the tile to the below and to the right of the sprite is not a wall
-                basicEnemy.vx = 30 // make the sprite turn the other direction
-            }
-        }
-    })
- 
+        })
+    }
+    
+    tiles.placeOnTile(enemys[1], tiles.getTileLocation(10, 14))
+    tiles.placeOnTile(enemys[2], tiles.getTileLocation(20, 14))
+    tiles.placeOnTile(enemys[3], tiles.getTileLocation(29, 11))
 
     // colisions
     sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, otherSprite: Sprite) {       // when the playeer overlaps with the basic enemy
