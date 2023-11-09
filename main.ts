@@ -18,6 +18,9 @@ let tutroialBtnLabel:any
 let player: any
 let basicenemys: Sprite[] = []
 
+// system vars
+let lastLocaton: any
+
 /* -- "Execution" -- */
 
 
@@ -87,10 +90,18 @@ function tutorial() {
     let hitTwo = false
     
     pause(100)
-    game.showLongText('Use the right and left arrow keys to move, up to jump.', DialogLayout.Bottom)
-    console.log('yes')
-    scene.onOverlapTile(SpriteKind.Player, assets.tile`hitBox1`, function(sprite: Sprite, location: tiles.Location) {
-        console.log('Stuff')
+    game.showLongText('Use the right and left arrow keys to move use the up key to jump.', DialogLayout.Bottom)
+    scene.onOverlapTile(SpriteKind.Player, assets.tile`HitBox1`, function () {
+        if (hitOne == false) {
+            hitOne = true
+            game.showLongText('Jump over lava.', DialogLayout.Bottom)
+        }
+    })
+    scene.onOverlapTile(SpriteKind.Player, assets.tile`HitBox 2`, function () {
+        if (hitTwo == false) {
+            hitTwo = true
+            game.showLongText('Land on enemys to defeat them', DialogLayout.Bottom)
+        }
     })
 
 }
@@ -130,15 +141,18 @@ function platformerSetup() {
     let attackCoolDwn = false
     sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite: Sprite, otherSprite: Sprite) {       // when the playeer overlaps with the basic enemy
         if (sprite.vy >0 && (!(sprite.isHittingTile(CollisionDirection.Bottom)) || sprite.y > otherSprite.top) && (attackCoolDwn == false)) { // if the player landed on the enemy
-            player.vy = -100
+            player.vy = -100      // make the player bounce
             otherSprite.destroy() // destroy the enemy
-        } else if (hitCoolDwn == false){
-            info.changeLifeBy(-1)
-            controller.moveSprite(player, 0 ,0)
-            player.vy = -100
-            player.vx = -50
-            hitCoolDwn = true
-            attackCoolDwn = true
+        
+        } else if (hitCoolDwn == false) {
+            info.changeLifeBy(-1)               // take 1 life away
+            controller.moveSprite(player, 0 ,0) // dont let the player move
+            
+            player.vy = -100 // bounce the player up
+            player.vx = -50  // bounce the player back
+            
+            hitCoolDwn = true    // cooldown for if the player has been hit recently
+            attackCoolDwn = true // cooldown so the player cant attack while hit cool down is activated
 
             timer.after(500, function () {
                 player.vx = 0
@@ -149,19 +163,50 @@ function platformerSetup() {
             })
         }
     })
-    let lastLocaton:any = player.tilemapLocation
-    scene.onOverlapTile(SpriteKind.Player, assets.tile`Lava1` || assets.tile`Lava2`, function () {
-        tiles.placeOnTile(player, tiles.getTileLocation(lastLocaton.y, lastLocaton.x))
-        /*while (!(tiles.tileAtLocationIsWall(player.tilemapLocation().getNeighboringLocation(CollisionDirection.Bottom)))) {
-            player.yLocation =- 1
-        }*/
+
+    // lava
+    scene.onOverlapTile(SpriteKind.Player, assets.tile`Lava1`, function () {
+        if (hitCoolDwn == false) {
+            hitCoolDwn = true
+
+            info.changeLifeBy(-1)
+        
+            tiles.placeOnTile(player, lastLocaton)
+
+            for (let i = 0; i <= 5; i++) {
+                if (!(tiles.tileAtLocationIsWall(player.tilemapLocation().getNeighboringLocation(CollisionDirection.Bottom)))) {
+                    tiles.placeOnTile(player, tiles.getTileLocation(player.xLocation, player.yLocation - 1))
+                }
+            }
+            timer.after(100, function () {
+                hitCoolDwn = false
+            })
+        }
+
     })
-    scene.onOverlapTile(SpriteKind.Player, assets.tile`Respawn Point`, function () {
-        lastLocaton = player.tilemapLocation
+
+    scene.onOverlapTile(SpriteKind.Player, assets.tile`Lava2`, function () {
+        if (hitCoolDwn == false) {
+            hitCoolDwn = true
+            tiles.placeOnTile(player, lastLocaton)
+            info.changeLifeBy(-1)
+            for (let i = 0; i <= 5; i++) {
+                if (!(tiles.tileAtLocationIsWall(player.tilemapLocation().getNeighboringLocation(CollisionDirection.Bottom)))) {
+                    tiles.placeOnTile(player, tiles.getTileLocation(player.xLocation, player.yLocation - 1))
+                }
+            }
+            timer.after(100, function () {
+                hitCoolDwn = false
+            })
+        }
+    })
+
+    scene.onOverlapTile(SpriteKind.Player, assets.tile`Respawn Point`, function (sprite: Sprite, location: tiles.Location) {
+        lastLocaton = location
     })
 }
 
-// function for basic enemy setup
+// function for basic enemy setup (number of enemys, if the enemy will travel all space given, length of travel of not all space given)
 function BscEnSetup(numOEn: number, fullAreia: boolean, lenght: number) {
     //enemy setup
     for (let i = 0; i <= numOEn; i++) {
@@ -174,17 +219,17 @@ function BscEnSetup(numOEn: number, fullAreia: boolean, lenght: number) {
         game.onUpdateInterval(200, function () { // evry 0.2 sec          
             for (let i = 0; i <= numOEn; i++) {
                 if (basicenemys[i].vx == 30) {  // if the player is traveling right
-                    if (!(tiles.tileAtLocationIsWall(basicenemys[i].tilemapLocation().getNeighboringLocation(CollisionDirection.Right).getNeighboringLocation(CollisionDirection.Bottom)))) { // if the tile to the below and to the right of the sprite is not a wall
+                    if (!(tiles.tileAtLocationIsWall(basicenemys[i].tilemapLocation().getNeighboringLocation(CollisionDirection.Right).getNeighboringLocation(CollisionDirection.Bottom)) || tiles.tileAtLocationIsWall(basicenemys[1].tilemapLocation().getNeighboringLocation(CollisionDirection.Right)))) { // if the tile to the below and to the right or the right of the sprite is not a wall
                         basicenemys[i].vx = -30 // make the sprite turn the other direction
                     }
                 } else {
-                    if (!(tiles.tileAtLocationIsWall(basicenemys[i].tilemapLocation().getNeighboringLocation(CollisionDirection.Left).getNeighboringLocation(CollisionDirection.Bottom)))) { // if the tile to the below and to the right of the sprite is not a wall
+                    if (!(tiles.tileAtLocationIsWall(basicenemys[i].tilemapLocation().getNeighboringLocation(CollisionDirection.Left).getNeighboringLocation(CollisionDirection.Bottom)) || tiles.tileAtLocationIsWall(basicenemys[1].tilemapLocation().getNeighboringLocation(CollisionDirection.Left)))) { // if the tile to the below and to the left or to the left of the sprite is not a wall
                         basicenemys[i].vx = 30 // make the sprite turn the other direction
                     }
                 }
             }
         })
-    } else {
+    } else { // if the enemy sould only go a certan distance
         game.onUpdateInterval(lenght, function () {
             for (let i = 0; i <= numOEn; i++) {
                 if (basicenemys[i].vx == -30) {
@@ -197,6 +242,7 @@ function BscEnSetup(numOEn: number, fullAreia: boolean, lenght: number) {
     }
 }
 
+// function for more easly changing the location of a sprite
 function reLocate(srit: any, x: number, y: number) {
     tiles.placeOnTile(srit, tiles.getTileLocation(x, y))
 }
